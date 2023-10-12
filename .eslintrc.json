@@ -2,6 +2,8 @@
   "extends": ["next/core-web-vitals", "airbnb-base"],
   "rules": {
     "no-console": "off",
+    "linebreak-style": "off",
+    "import/no-extraneous-dependencies": "off",
     "no-unused-vars": [
       "error",
       {

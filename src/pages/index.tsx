@@ -1,14 +1,18 @@
-import io, { Socket } from 'socket.io-client';
 import React, {
   FormEvent, Fragment, useEffect, useState,
 } from 'react';
+import dynamic from 'next/dynamic';
+import { MessageType } from '@/types';
+import io, { Socket } from 'socket.io-client';
+import useLocalStorage from '../../@hooks/useLocalStorage';
 
+const UserLoginModal = dynamic(() => import('@/components/user-login-modal'), { ssr: false });
 let socket: Socket;
 
 const HomePage = () => {
   const [message, setMessage] = useState('');
-  // const [username, setUsername] = useState('');
-  const [allMessages, setAllMessages] = useState<any[]>([]);
+  const [user] = useLocalStorage<any>('user', {});
+  const [messagesList, setMessagesList] = useState<MessageType[]>([]);
 
   async function socketInitializer() {
     await fetch('/api/socket?EIO=4&transport=polling');
@@ -16,7 +20,7 @@ const HomePage = () => {
 
     socket.on('receive-message', (msg) => {
       console.log('receive-message', msg);
-      setAllMessages((pre) => [...pre, msg]);
+      setMessagesList((pre) => [...pre, msg]);
       window.scrollTo(0, document.body.scrollHeight);
     });
   }
@@ -32,9 +36,10 @@ const HomePage = () => {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setMessagesList((pre) => [...pre, { message, userName: user.userName }]);
 
     socket.emit('send-message', {
-      // username,
+      userName: user.userName,
       message,
     });
 
@@ -43,27 +48,30 @@ const HomePage = () => {
 
   return (
     <Fragment>
-      {/* <input value={username} onChange={(e) => setUsername(e.target.value)} /> */}
+      <div className='container-fluid'>
 
-      <ul id="messages">
-        {allMessages.map((data, index) => (
-          <li key={index}>
-            Raju: {data.message}
-          </li>
-        ))}
-      </ul>
+        <ul id="messages">
+          {messagesList.map((data, index) => (
+            <li key={index}>
+              {data.userName}: {data.message}
+            </li>
+          ))}
+        </ul>
 
-      <form id="form" onSubmit={handleSubmit}>
-        <input
-          id="input"
-          name="message"
-          value={message}
-          autoComplete={'off'}
-          placeholder="enter your message"
-          onChange={(e) => setMessage(e.target.value)}
-        />
-        <button>Send</button>
-      </form>
+        <form id="form" onSubmit={handleSubmit}>
+          <input
+            id="input"
+            name="message"
+            value={message}
+            autoComplete={'off'}
+            placeholder="enter your message"
+            onChange={(e) => setMessage(e.target.value)}
+          />
+          <button>Send</button>
+        </form>
+
+        {!Object.keys(user).length && <UserLoginModal isDisplay={true} />}
+      </div>
     </Fragment>
   );
 };
