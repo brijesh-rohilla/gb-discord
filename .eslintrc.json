@@ -3,6 +3,7 @@
   "rules": {
     "no-console": "off",
     "linebreak-style": "off",
+    "import/prefer-default-export": "off",
     "import/no-extraneous-dependencies": "off",
     "no-unused-vars": [
       "error",

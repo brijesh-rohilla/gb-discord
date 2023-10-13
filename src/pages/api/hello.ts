@@ -11,3 +11,23 @@ export default function handler(
 ) {
   res.status(200).json({ name: 'John Doe' });
 }
+
+// export async function getServerSideProps() {
+//   try {
+//     const doc = await connectSheet();
+
+//     const sheet = getSheetInstance({ doc });
+//     const data = await getSheetStaticData(sheet);
+
+//     return {
+//       props: {
+//         headers: JSON.stringify(sheet.headerValues),
+//         rows: JSON.stringify(data, (_, k) => (k === undefined ? '' : k)),
+//       },
+//     };
+//   } catch (error) {
+//     console.log(error);
+//     // Return if server error
+//     return { notFound: true };
+//   }
+// }
