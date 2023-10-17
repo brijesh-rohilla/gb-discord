@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import { UserType, userDefault } from '@/types';
 import { Button, Modal, Form } from 'react-bootstrap';
 import useLocalStorage from '../../@hooks/useLocalStorage';
 
@@ -6,7 +8,7 @@ export default function UserLoginModal({ isDisplay = false }: { isDisplay: boole
   const [show, setShow] = useState(isDisplay);
   const [userName, setuserName] = useState('');
   const [validated, setValidated] = useState(false);
-  const [_user, setUser] = useLocalStorage('user', {});
+  const [_user, setUser] = useLocalStorage<UserType>('user', userDefault);
 
   const handleClose = () => setShow(false);
   // const handleShow = () => setShow(true);
@@ -21,7 +23,7 @@ export default function UserLoginModal({ isDisplay = false }: { isDisplay: boole
     }
 
     setValidated(true);
-    setUser({ userName });
+    setUser({ userName, userId: uuidv4() });
     handleClose(); // Close Modal
   };
 
