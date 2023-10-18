@@ -1,4 +1,4 @@
-import type { GoogleSpreadsheet, GoogleSpreadsheetRow, GoogleSpreadsheetWorksheet } from 'google-spreadsheet';
+import type { GoogleSpreadsheet, GoogleSpreadsheetWorksheet } from 'google-spreadsheet';
 import {
   SheetParams,
   SheetProperties,
@@ -28,9 +28,13 @@ export const getSheetProperties = (sheet: GoogleSpreadsheetWorksheet): SheetProp
 
 export const getSheetStaticData = async (
   sheet: GoogleSpreadsheetWorksheet,
-  rows?: GoogleSpreadsheetRow<Record<string, any>>[],
+  offset: number = 0,
+  limit: number = 10,
 ): Promise<SheetStaticData[]> => {
-  const data = rows || await sheet.getRows();
+  const data = await sheet.getRows({
+    limit,
+    offset,
+  });
 
   // Return as static object values
   return data.map((row, index) => ({
@@ -52,5 +56,5 @@ export const updateSheetRow = async (
   rows[index].assign({ ...data });
   await rows[index].save();
 
-  return getSheetStaticData(sheet, rows);
+  return getSheetStaticData(sheet);
 };
