@@ -36,8 +36,11 @@ const HomePage = () => {
 
     socket.on('receive-message', (msg: MessageType) => {
       console.log('receive-message', msg);
-      setMessagesList((pre) => [msg, ...pre]);
-      window.scrollTo(0, document.body.scrollHeight);
+      // Check if the message already exists in the state to avoid duplicates
+      if (!messagesList.some((existingMessage) => existingMessage.messageId === msg.messageId)) {
+        setMessagesList((prevMessages) => [msg, ...prevMessages]);
+        window.scrollTo(0, document.body.scrollHeight);
+      }
     });
   }
 
@@ -63,7 +66,13 @@ const HomePage = () => {
       timestamp: new Date(),
     };
 
-    socket.emit('send-message', msg);
+    socket.emit('send-message', msg, (ack: any) => {
+      if (ack) {
+        console.log('Message sent successfully:', msg);
+      } else {
+        console.error('Error sending message:', msg);
+      }
+    });
     setMessagesList((pre) => [msg, ...pre]);
     setMessage('');
   };
