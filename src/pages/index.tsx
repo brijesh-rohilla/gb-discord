@@ -1,6 +1,4 @@
-import React, {
-  FormEvent, Fragment, useEffect, useState,
-} from 'react';
+import React, { FormEvent, Fragment, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { v4 as uuidv4 } from 'uuid';
 import io, { Socket } from 'socket.io-client';
@@ -54,7 +52,9 @@ const HomePage = () => {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
+    if (!message.trim()) {
+      return;
+    }
     const msg: MessageType = {
       message,
       userId: user.userId,
@@ -93,11 +93,11 @@ const HomePage = () => {
 
   return (
     <Fragment>
-      <div className='container-fluid'>
-        <div className='row'>
-          <div className='col'>
-
-            <ul className='mb-5 vh-100'
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col">
+            <ul
+              className="mb-5 vh-100"
               id="msg-box"
               style={{
                 overflow: 'auto',
@@ -117,18 +117,25 @@ const HomePage = () => {
                   <p style={{ textAlign: 'center' }}>
                     <b>Yay! You have seen it all</b>
                   </p>
-                }>
+                }
+              >
                 {messagesList.map((data, index) => {
                   const msgAlignClass = data.userId === user.userId ? 'text-right' : 'text-left';
                   const msgColorClass = data.userId === user.userId ? 'bg-primary' : 'bg-secondary';
 
                   return (
                     <li key={index} className={`py-1 ${msgAlignClass}`}>
-                      <div className={`d-inline-block px-3 py-1 text-white rounded ${msgColorClass}`}>
-                        <div className={`small mb-1 text-light font-weight-bold ${msgAlignClass}`}>{data.userName}</div>
+                      <div
+                        className={`d-inline-block px-3 py-1 text-white rounded ${msgColorClass}`}
+                      >
+                        <div className={`small mb-1 text-light font-weight-bold ${msgAlignClass}`}>
+                          {data.userName}
+                        </div>
                         <div>{data.message}</div>
-                        <div className='small text-right'>
-                          {`${new Date(data.timestamp).getHours()} : ${new Date(data.timestamp).getMinutes()}`}
+                        <div className="small text-right">
+                          {`${new Date(data.timestamp).getHours()} : ${new Date(
+                            data.timestamp
+                          ).getMinutes()}`}
                         </div>
                       </div>
                     </li>
@@ -146,7 +153,9 @@ const HomePage = () => {
                 placeholder="Message"
                 onChange={(e) => setMessage(e.target.value)}
               />
-              <button>Send</button>
+              <button type="submit" disabled={!message.trim()} className="send-button">
+                Send
+              </button>
             </form>
 
             {!user.userId && <UserLoginModal isDisplay={true} />}

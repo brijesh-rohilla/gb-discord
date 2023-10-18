@@ -47,16 +47,19 @@
   outline: none;
 }
 
-#form > button {
-  background: #333;
+.send-button {
+  background-color: #25d366; /* WhatsApp green color */
+  color: white;
   border: none;
+  border-radius: 4px;
   padding: 0 1rem;
-  margin: 0.25rem;
-  border-radius: 3px;
-  outline: none;
-  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
 }
 
+.send-button:hover {
+  background-color: #128c7e; /* Darker green for hover effect */
+}
 /* #messages {
   list-style-type: none;
   margin: 0;
