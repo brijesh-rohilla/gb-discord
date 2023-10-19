@@ -1,4 +1,6 @@
-import React, { FormEvent, Fragment, useEffect, useState } from 'react';
+import React, {
+  FormEvent, Fragment, useEffect, useState,
+} from 'react';
 import dynamic from 'next/dynamic';
 import { v4 as uuidv4 } from 'uuid';
 import io, { Socket } from 'socket.io-client';
@@ -66,13 +68,7 @@ const HomePage = () => {
       timestamp: new Date(),
     };
 
-    socket.emit('send-message', msg, (ack: any) => {
-      if (ack) {
-        console.log('Message sent successfully:', msg);
-      } else {
-        console.error('Error sending message:', msg);
-      }
-    });
+    socket.emit('send-message', msg);
     setMessagesList((pre) => [msg, ...pre]);
     setMessage('');
   };
@@ -143,7 +139,7 @@ const HomePage = () => {
                         <div>{data.message}</div>
                         <div className="small text-right">
                           {`${new Date(data.timestamp).getHours()} : ${new Date(
-                            data.timestamp
+                            data.timestamp,
                           ).getMinutes()}`}
                         </div>
                       </div>
