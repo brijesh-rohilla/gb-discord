@@ -30,7 +30,7 @@ export default function SocketHandler(
     socket.on('send-message', async (msg: MessageType) => {
       const db = await connectDB();
 
-      db.insert({
+      db?.insert({
         user_id: msg.userId,
         message: msg.message,
         user_name: msg.userName,
