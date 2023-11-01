@@ -20,16 +20,16 @@ const HomePage = () => {
   const [messagesList, setMessagesList] = useState<MessageType[]>([]);
 
   async function socketInitializer() {
-    const data = await fetch('/api/sheet-action?limit=10&offset=0');
+    const data = await fetch('/api/db-action?limit=10&offset=0');
     const messageData = await data.json();
 
     setMessagesList([
       ...messageData.map((x: any) => ({
-        message: x.data.message,
-        userId: x.data.user_id,
-        userName: x.data.user_name,
-        timestamp: x.data.timestamp,
-        messageId: x.data.message_id,
+        message: x.message,
+        userId: x.user_id,
+        userName: x.user_name,
+        createdAt: x.createdAt,
+        messageId: x.message_id,
       })),
     ]);
 
@@ -65,7 +65,7 @@ const HomePage = () => {
       userId: user.userId,
       messageId: uuidv4(),
       userName: user.userName,
-      timestamp: new Date(),
+      createdAt: new Date(),
     };
 
     socket.emit('send-message', msg);
@@ -74,7 +74,7 @@ const HomePage = () => {
   };
 
   const fetchData = async () => {
-    const data = await fetch(`/api/sheet-action?limit=10&offset=${msgOffset}`);
+    const data = await fetch(`/api/db-action?limit=10&offset=${msgOffset}`);
     const messageData = await data.json();
     setMsgOffset((prev) => prev + 10);
 
@@ -85,11 +85,11 @@ const HomePage = () => {
     setMessagesList((pre) => [
       ...pre,
       ...messageData.map((x: any) => ({
-        message: x.data.message,
-        userId: x.data.user_id,
-        userName: x.data.user_name,
-        timestamp: x.data.timestamp,
-        messageId: x.data.message_id,
+        message: x.message,
+        userId: x.user_id,
+        userName: x.user_name,
+        createdAt: x.createdAt,
+        messageId: x.message_id,
       })),
     ]);
 
@@ -138,8 +138,8 @@ const HomePage = () => {
                         </div>
                         <div>{data.message}</div>
                         <div className="small text-right">
-                          {`${new Date(data.timestamp).getHours()} : ${new Date(
-                            data.timestamp,
+                          {`${new Date(data.createdAt).getHours()} : ${new Date(
+                            data.createdAt,
                           ).getMinutes()}`}
                         </div>
                       </div>

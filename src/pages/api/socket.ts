@@ -3,8 +3,7 @@ import { Socket } from 'socket.io';
 import CustomSocketServer from '@/types/extended/custom-socket-server';
 
 import { MessageType } from '@/types';
-import connectSheet from '../../../utils/connectSheet';
-import { getSheetInstance } from '../../../utils/sheet-helpers';
+import connectDB from '../../../utils/connectDB';
 
 export default function SocketHandler(
   _req: NextApiRequest,
@@ -29,11 +28,9 @@ export default function SocketHandler(
 
   io.on('connection', (socket: Socket) => {
     socket.on('send-message', async (msg: MessageType) => {
-      const doc = await connectSheet();
-      const sheet = getSheetInstance({ doc, method: 'sheetsByTitle', key: 'chat' });
+      const db = await connectDB();
 
-      sheet.addRow({
-        timestamp: new Date(),
+      db.insert({
         user_id: msg.userId,
         message: msg.message,
         user_name: msg.userName,

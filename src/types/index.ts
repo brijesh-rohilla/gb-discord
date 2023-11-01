@@ -9,7 +9,7 @@ export const userDefault: UserType = {
 };
 
 export interface MessageType {
-  timestamp: Date;
+  createdAt: Date;
   userId: string;
   message: string,
   userName: string;
